@@ -1,0 +1,6 @@
+.cabal-sandbox/
+cabal.sandbox.config
+dist/
+src/BNFC/
+tests/*.class
+tests/*.j

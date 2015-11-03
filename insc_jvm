@@ -1,3 +1,4 @@
 #!/bin/bash
 
-.cabal-sandbox/bin/InstantCompiler jvm $1
+.cabal-sandbox/bin/InstantCompiler jvm "$1" > "${1%.*}.j"
+java -jar lib/jasmin.jar -d $(dirname "$1") "${1%.*}.j"

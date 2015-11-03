@@ -14,6 +14,8 @@ import Control.Monad.State
 import Data.Map as M
 import Data.Set as S
 import System.Environment
+import Filesystem.Path.CurrentOS
+import Filesystem.Path
 
 import LLVM
 import JVM
@@ -34,7 +36,7 @@ main = do
     Right ast ->
       case runSemanticAnalysis ast of
         Left e -> putStrLn e
-        Right () -> do
-          if compiler == "llvm" then mapM_ print (LLVM.compile ast)
-          else if compiler == "jvm" then mapM_ print (JVM.compile ast)
-          else putStrLn $ "Unknown compiler " ++ compiler
+        Right ()
+          | compiler == "llvm" -> mapM_ print (LLVM.compile ast)
+          | compiler == "jvm" -> mapM_ print (JVM.compile ast (encodeString (basename (decodeString srcPath))))
+          | otherwise -> putStrLn $ "Unknown compiler " ++ compiler

@@ -20,7 +20,7 @@ data Instruction = Add
                  | Store Integer
                  | LoadPrint
                  | Print
-                 | BoilerplateCode
+                 | BoilerplateCode String
                  | BeginMainDeclaration
                  | LimitStack Integer
                  | LimitLocals Integer
@@ -47,13 +47,13 @@ instance Show Instruction where
     | otherwise = "istore " ++ show i
   show LoadPrint = "getstatic java/lang/System/out Ljava/io/PrintStream;"
   show Print = "invokevirtual java/io/PrintStream/println(I)V"
-  show BoilerplateCode = ".class  public Hello\n\
-                         \.super  java/lang/Object\n\
-                         \.method public <init>()V\n\
-                         \aload_0\n\
-                         \invokespecial java/lang/Object/<init>()V\n\
-                         \return\n\
-                         \.end method"
+  show (BoilerplateCode s) = ".class  public " ++ s ++ "\n\
+                             \.super  java/lang/Object\n\
+                             \.method public <init>()V\n\
+                             \aload_0\n\
+                             \invokespecial java/lang/Object/<init>()V\n\
+                             \return\n\
+                             \.end method"
   show BeginMainDeclaration = ".method public static main([Ljava/lang/String;)V"
   show (LimitStack i) = ".limit stack " ++ show i
   show (LimitLocals i) = ".limit locals " ++ show i
@@ -108,16 +108,16 @@ compileStmt (SExp e) = do
   (d, ie) <- compileExp e
   return (max d 2, ([LoadPrint] ++) . ie . ([Print] ++))
 
-compileProgram :: Program -> State CompilerState [Instruction]
-compileProgram (Prog xs) = do
+compileProgram :: Program -> String -> State CompilerState [Instruction]
+compileProgram (Prog xs) name = do
   rs <- mapM compileStmt xs
   let d = maximum $ map fst rs
   let is = foldr snd [] rs
   l <- nextLocal <$> get
-  return $ [BoilerplateCode, BeginMainDeclaration, LimitStack (d + 1), LimitLocals l] ++ is ++ [Return, EndMainDeclaration]
+  return $ [BoilerplateCode name, BeginMainDeclaration, LimitStack (d + 1), LimitLocals l] ++ is ++ [Return, EndMainDeclaration]
   where
     isSAss (SAss _ _) = True
     isSAss _ = False
 
-compile :: Program -> [Instruction]
-compile p = evalState (compileProgram p) CompilerState { nextLocal = 1, varToLocal = empty }
+compile :: Program -> String -> [Instruction]
+compile p name = evalState (compileProgram p name) CompilerState { nextLocal = 1, varToLocal = empty }
