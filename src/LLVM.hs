@@ -31,7 +31,7 @@ instance Show Instruction where
   show (Add r v1 v2) = show r ++ " = add i32 " ++ show v1 ++ ", " ++ show v2
   show (Sub r v1 v2) = show r ++ " = sub i32 " ++ show v1 ++ ", " ++ show v2
   show (Mul r v1 v2) = show r ++ " = mul i32 " ++ show v1 ++ ", " ++ show v2
-  show (Div r v1 v2) = show r ++ " = div i32 " ++ show v1 ++ ", " ++ show v2
+  show (Div r v1 v2) = show r ++ " = sdiv i32 " ++ show v1 ++ ", " ++ show v2
   show DeclarePrintInt = "declare void @printInt(i32)"
   show BeginMainDeclaration = "define i32 @main() {"
   show (CallPrintInt v) = "call void @printInt(i32 " ++ show v ++ ")"
