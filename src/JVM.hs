@@ -106,7 +106,7 @@ compileStmt (SAss v e) = do
   return (d, ie . ([Store i] ++))
 compileStmt (SExp e) = do
   (d, ie) <- compileExp e
-  return (max d 2, ([LoadPrint] ++) . ie . ([Print] ++))
+  return (max d 2, ie . ([LoadPrint, Swap, Print] ++))
 
 compileProgram :: Program -> String -> State CompilerState [Instruction]
 compileProgram (Prog xs) name = do
@@ -114,7 +114,7 @@ compileProgram (Prog xs) name = do
   let d = maximum $ map fst rs
   let is = foldr snd [] rs
   l <- nextLocal <$> get
-  return $ [BoilerplateCode name, BeginMainDeclaration, LimitStack (d + 1), LimitLocals l] ++ is ++ [Return, EndMainDeclaration]
+  return $ [BoilerplateCode name, BeginMainDeclaration, LimitStack d, LimitLocals l] ++ is ++ [Return, EndMainDeclaration]
   where
     isSAss (SAss _ _) = True
     isSAss _ = False
