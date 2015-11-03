@@ -1,3 +1,11 @@
 #!/bin/bash
 
-.cabal-sandbox/bin/InstantCompiler llvm "$1"
+if [ -e "$1" ]
+then
+  .cabal-sandbox/bin/InstantCompiler llvm "$1" > "${1%.*}.ll"
+  llvm-as -o "${1%.*}_tmp.bc" "${1%.*}.ll"
+  llvm-link -o "${1%.*}.bc" "${1%.*}_tmp.bc" lib/runtime.bc
+  rm "${1%.*}_tmp.bc"
+else
+  echo "Couln't find file '$1'."
+fi

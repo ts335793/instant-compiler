@@ -29,3 +29,7 @@ src/BNFC/AbsInstant.hs src/BNFC/ErrM.hs src/BNFC/LexInstant.hs src/BNFC/ParInsta
 clean:
 	-rm .cabal-sandbox/bin/InstantCompiler
 	-rm -r src/BNFC
+	-rm tests/*.class
+	-rm tests/*.j
+	-rm tests/*.ll
+	-rm tests/*.bc

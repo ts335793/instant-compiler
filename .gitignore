@@ -4,3 +4,5 @@ dist/
 src/BNFC/
 tests/*.class
 tests/*.j
+tests/*.bc
+tests/*.ll
