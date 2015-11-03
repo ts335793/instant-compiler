@@ -13,6 +13,7 @@ import Control.Monad.Reader
 import Control.Monad.State
 import Data.Map as M
 import Data.Set as S
+import System.Environment
 
 import LLVM
 import JVM
@@ -26,12 +27,14 @@ parse s =
 
 main :: IO ()
 main = do
-  let s = "a = 2*2; 13 * a; b = a + 2; b + 2 + a; a = 10; 1 - (2 + 3 * a)"
-  case parse s of
+  [compiler, srcPath] <- getArgs
+  src <-readFile srcPath
+  case parse src of
     Left e -> putStrLn e
-    Right t ->
-      case runSemanticAnalysis t of
+    Right ast ->
+      case runSemanticAnalysis ast of
         Left e -> putStrLn e
         Right () -> do
-          mapM_ print (LLVM.compile t)
-          mapM_ print (JVM.compile t)
+          if compiler == "llvm" then mapM_ print (LLVM.compile ast)
+          else if compiler == "jvm" then mapM_ print (JVM.compile ast)
+          else putStrLn $ "Unknown compiler " ++ compiler
