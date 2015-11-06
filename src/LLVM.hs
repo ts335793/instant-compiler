@@ -8,6 +8,7 @@ import BNFC.AbsInstant
 import BNFC.ErrM
 
 import Control.Monad.State
+import Control.Applicative hiding (empty)
 import Data.Map
 
 data Value = Register Integer

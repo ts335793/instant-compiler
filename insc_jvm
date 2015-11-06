@@ -2,7 +2,7 @@
 
 if [ -e "$1" ]
 then
-  .cabal-sandbox/bin/InstantCompiler jvm "$1" > "${1%.*}.j"
+  $HOME/.cabal/bin/InstantCompiler jvm "$1" > "${1%.*}.j"
   java -jar lib/jasmin.jar -d $(dirname "$1") "${1%.*}.j"
 else
   echo "Couln't find file '$1'."

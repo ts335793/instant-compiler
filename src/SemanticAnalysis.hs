@@ -9,6 +9,7 @@ import BNFC.ErrM
 
 import Control.Monad.Error
 import Control.Monad.State
+import Control.Applicative hiding (empty)
 import Data.Set
 
 class SemanticallyAnalysable a where

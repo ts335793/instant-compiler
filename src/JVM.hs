@@ -9,6 +9,7 @@ import BNFC.ErrM
 
 import Data.Map hiding (map, filter, foldr)
 import Control.Monad.State
+import Control.Applicative hiding (empty, Const)
 
 data Instruction = Add
                  | Sub
